@@ -126,7 +126,7 @@ ul.main-menu li a:hover {
 }
 ul.main-menu li a.active {
   color:#FFFFFF;
-  border-bottom-color: rgb(119, 232, 102);
+  border-bottom-color: #77e866;
 }
 
 /* Utility classes */
