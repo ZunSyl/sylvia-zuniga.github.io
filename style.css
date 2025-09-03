@@ -1,13 +1,11 @@
-/**
- * Typography & Text styles
- */
 
-/* html is set to 62.5% so that all the REM measurements are based on 10px sizing. So basically 1.5rem = 15px */
+/* Base sizing */
 html {
   font-size: 62.5%;
 }
+
 body {
-  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  font-size: 1.5em;
   line-height: 1.6;
   font-weight: 400;
   font-family: "Roboto", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -19,7 +17,7 @@ body {
  */
 a {
   font-weight: normal;
-  text-decoration: none; 
+  text-decoration: none;
   color: rgb(119, 232, 102);
 }
 a:focus {
@@ -33,14 +31,9 @@ small {
 /**
  * Headings
  */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   line-height: 1;
-  text-rendering: optimizeLegibility; /*  voodoo to enable ligatures and kerning | https://developer.mozilla.org/en-US/docs/CSS/text-rendering */
+  text-rendering: optimizeLegibility;
   margin-top: 0;
   margin-bottom: 2rem;
   font-weight: 300;
@@ -56,10 +49,7 @@ h6 { font-size: 1.4rem; line-height: 1.6;  letter-spacing: 0; }
  * Paragraphs
  */
 p {
-  margin: 0 auto 1.5em auto; /* bottom margin for paragraphs */
-}
-p + p {
-
+  margin: 0 auto 1.5em auto;
 }
 
 /**
@@ -76,14 +66,13 @@ q:after {
 }
 
 blockquote {
-  /*background-color: #F8F8F8;*/
   border-left: 2px solid #AFC0D2;
   margin: 1.6em 10%;
   padding: .75em 1em;
   font-size:1.8rem;
 }
 blockquote p:last-child {
-  margin-bottom: 0;  
+  margin-bottom: 0;
 }
 
 /**
@@ -91,19 +80,27 @@ blockquote p:last-child {
  */
 
 /* Full size background image */
-html, #container, .inner { background-color:transparent;}
+html, #container, .inner {
+  background-color: transparent;
+}
 html {
   background:url(background.jpg) center center no-repeat fixed;
   background-size:cover;
 }
-body {
-  max-width:800px;
-  margin:25px auto;
+
+/* The main centered panel */
+.site-panel {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: 25px;
+  text-align: left;
 }
-header, #content, footer { 
-  background: rgba(0,0,0,.8); 
-  padding:25px;
-  color:#FFFFFF; 
+
+/* Header/content/footer inside panel now transparent */
+header, #content, footer {
+  background: transparent;
+  padding: 25px;
+  color:#FFFFFF;
 }
 
 /* Menu Links */
