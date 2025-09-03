@@ -213,8 +213,8 @@
                     <a href="#pictures" data-scroll="#wpa-2025"   class="btn btn-outline-success btn-sm">WPA 2025</a>
                   </div>
                 
-                  <p>
-                    Here are pictures from conferences and with my research team from SCDL!
+                  
+                    <p>Here are pictures from conferences and with my research team from SCDL!</p>
                 
                     <!-- Add IDs to the headers you want to jump to -->
                     <h3 id="spsp-2024">Society for Personality and Social Psychology (SPSP) International Conference 2024</h3>
@@ -243,7 +243,7 @@
                     <img src="pictures/WPA_pic3.jpg" alt="Sylvia presenting at WPA" width="695" height="540"><br>
                     <img src="pictures/WPA_pic4.jpg" alt="Sylvia presenting at WPA" width="695" height="540"><br>
                     <img src="pictures/WPA_group_pic.jpg" alt="Sylvia and SCDL lab members at WPA" width="695" height="540"><br>
-                  </p>
+                  
                 </div>
 
               </div>
@@ -266,27 +266,48 @@
     <script src="script.js"></script>
     
     <script>
-      // Smooth scrolling inside #pictures without breaking the existing hash router
-      document.querySelectorAll('#pictures .section-index [data-scroll]').forEach(function(link){
-        link.addEventListener('click', function(e){
-          e.preventDefault();
-          const targetSel = this.getAttribute('data-scroll');
+      // Smooth scrolling inside #pictures with exact offset for navbar + sticky index
+      (function () {
+        const links = document.querySelectorAll('#pictures .section-index [data-scroll]');
+        if (!links.length) return;
     
-          // Ensure Pictures section is visible (router sometimes hides others)
-          const pictures = document.getElementById('pictures');
-          if (pictures && pictures.classList.contains('hide')) {
-            document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
-            pictures.classList.remove('hide');
-          }
+        function getOffset() {
+          const nav = document.querySelector('.custom-navbar');
+          const indexBar = document.querySelector('#pictures .section-index');
+          const navH = nav ? nav.offsetHeight : 0;
+          const idxH = indexBar ? indexBar.offsetHeight : 0;
+          // Add a little breathing room so the heading isn't jammed against the bar
+          return navH + idxH + 12;
+        }
     
-          const target = document.querySelector(targetSel);
-          if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // Keep URL hash at #pictures so your router stays happy
+        links.forEach(function (link) {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetSel = this.getAttribute('data-scroll');
+    
+            // Ensure Pictures section is visible (legacy router)
+            const pictures = document.getElementById('pictures');
+            if (pictures && pictures.classList.contains('hide')) {
+              document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
+              pictures.classList.remove('hide');
+            }
+    
+            const target = document.querySelector(targetSel);
+            if (!target) return;
+    
+            const offset = getOffset();
+            const targetTop = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    
+            window.scrollTo({
+              top: targetTop,
+              behavior: 'smooth'
+            });
+    
+            // Keep URL as #pictures so router doesn't blank the page
             history.replaceState(null, '', '#pictures');
-          }
+          });
         });
-      });
+      })();
     </script>
 
   </body>
