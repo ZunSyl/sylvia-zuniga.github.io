@@ -164,6 +164,44 @@ ul.main-menu li a.active {
   scroll-margin-top: 110px;
 }
 
+/* Mobile adjustments for the Pictures index menu */
+@media (max-width: 576px) {
+  .section-index {
+    flex-direction: column;      /* stack buttons vertically if too narrow */
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .section-index .btn {
+    font-size: 1.2rem;          /* smaller text */
+    padding: 0.4rem 0.8rem;     /* tighter padding */
+    border-radius: 16px;        /* slightly smaller curve */
+  }
+}
+
+/* Mobile adjustments for the top navbar */
+@media (max-width: 576px) {
+  .custom-navbar {
+    max-width: 100%;          /* let it span full width on very small screens */
+    padding: 0.4rem 0.8rem;
+  }
+
+  .navbar-brand span {
+    font-size: 1.2rem;        /* shrink brand name */
+  }
+
+  .navbar-brand img {
+    width: 28px;              /* smaller logo */
+    height: 28px;
+  }
+
+  .nav-pills .nav-link {
+    font-size: 1.2rem;        /* smaller link text */
+    padding: 0.4rem 0.8rem;   /* tighter padding */
+    border-radius: 12px;      /* less rounded for mobile */
+  }
+}
+
 /* Navbar Styling */
 .custom-navbar {
   max-width: 900px;           /* keeps it centered like the panel */
