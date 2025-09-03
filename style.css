@@ -134,4 +134,8 @@ ul.main-menu li a.active {
   display:block;
 }
 
+/* Fix: remove Bootstrap's white body background */
+body {
+  background: transparent !important;
+}
 
