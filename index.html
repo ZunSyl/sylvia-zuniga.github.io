@@ -266,49 +266,68 @@
     <script src="script.js"></script>
     
     <script>
-      // Smooth scrolling inside #pictures with exact offset for navbar + sticky index
       (function () {
-        const links = document.querySelectorAll('#pictures .section-index [data-scroll]');
-        if (!links.length) return;
-    
-        function getOffset() {
-          const nav = document.querySelector('.custom-navbar');
-          const indexBar = document.querySelector('#pictures .section-index');
-          const navH = nav ? nav.offsetHeight : 0;
-          const idxH = indexBar ? indexBar.offsetHeight : 0;
-          // Add a little breathing room so the heading isn't jammed against the bar
+        // Measure current heights
+        function calcOffset() {
+          const nav   = document.querySelector('.custom-navbar');               // your top navbar
+          const index = document.querySelector('#pictures .section-index');     // the sticky mini menu
+          const navH  = nav   ? nav.offsetHeight   : 0;
+          const idxH  = index ? index.offsetHeight : 0;
+          // small breathing room
           return navH + idxH + 12;
         }
     
-        links.forEach(function (link) {
-          link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetSel = this.getAttribute('data-scroll');
+        // Also set CSS variables so CSS fallback can be smarter later if you like
+        function setVars() {
+          const nav   = document.querySelector('.custom-navbar');
+          const index = document.querySelector('#pictures .section-index');
+          const navH  = nav   ? nav.offsetHeight   : 0;
+          const idxH  = index ? index.offsetHeight : 0;
+          document.documentElement.style.setProperty('--nav-h',  navH + 'px');
+          document.documentElement.style.setProperty('--idx-h',  idxH + 'px');
+        }
     
-            // Ensure Pictures section is visible (legacy router)
+        function scrollToTarget(target) {
+          const y = target.getBoundingClientRect().top + window.pageYOffset - calcOffset();
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    
+        // Bind clicks for Pictures index buttons
+        const links = document.querySelectorAll('#pictures .section-index [data-scroll]');
+        links.forEach((link) => {
+          // Use onclick to overwrite any earlier addEventListener, and stop other handlers
+          link.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+    
+            // Make sure #pictures is visible (legacy router)
             const pictures = document.getElementById('pictures');
             if (pictures && pictures.classList.contains('hide')) {
               document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
               pictures.classList.remove('hide');
             }
     
-            const target = document.querySelector(targetSel);
-            if (!target) return;
+            const sel = this.getAttribute('data-scroll');
+            const target = sel ? document.querySelector(sel) : null;
+            if (!target) return false;
     
-            const offset = getOffset();
-            const targetTop = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            // Scroll with exact offset
+            setVars();
+            scrollToTarget(target);
     
-            window.scrollTo({
-              top: targetTop,
-              behavior: 'smooth'
-            });
-    
-            // Keep URL as #pictures so router doesn't blank the page
+            // Keep URL as #pictures so router doesn’t hide the section
             history.replaceState(null, '', '#pictures');
-          });
+            return false;
+          };
         });
+    
+        // Recompute on load/resize (heights change across breakpoints)
+        window.addEventListener('load', setVars);
+        window.addEventListener('resize', setVars);
       })();
     </script>
+
 
   </body>
 </html>
