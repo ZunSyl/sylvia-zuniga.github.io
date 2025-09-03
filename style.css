@@ -134,6 +134,27 @@ ul.main-menu li a.active {
   display:block;
 }
 
+/* Navbar Styling */
+.custom-navbar {
+  max-width: 900px;           /* keeps it centered like the panel */
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Nav link hover and active colors */
+.nav-pills .nav-link.active,
+.nav-pills .nav-link:hover {
+  background-color: rgb(119, 232, 102);
+  color: black !important;
+  font-weight: bold;
+}
+
+/* Adjust title size */
+.navbar-brand span {
+  font-size: 1.6rem;
+  color: white;
+}
+
 /* Fix: remove Bootstrap's white body background */
 body {
   background: transparent !important;
