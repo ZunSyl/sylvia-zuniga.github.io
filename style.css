@@ -164,6 +164,11 @@ ul.main-menu li a.active {
   scroll-margin-top: 110px;
 }
 
+/* Ensure headings in Pictures land clear of the bars (CSS fallback) */
+#pictures h3 {
+  scroll-margin-top: 200px; /* safe default; JS will tighten this dynamically */
+}
+
 /* Mobile adjustments for the Pictures index menu */
 @media (max-width: 576px) {
   .section-index {
