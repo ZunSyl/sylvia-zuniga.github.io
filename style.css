@@ -256,15 +256,15 @@ body {
 
 
 /* Auto Centering all pictures and making them adaptable for all pages but the home page*/
-/* Make content images responsive everywhere (not the navbar logo) */
+/* Responsive, centered content images (not the navbar logo) */
 #about img,
 #research img,
 #pictures img,
 #contact img {
-  max-width: 100% !important;
-  height: auto !important;
+  width: 100%;        /* forces it to shrink with the container */
+  height: auto;
   display: block;
-  margin: 1rem auto;   /* remove if you don't want global centering/spacing */
+  margin: 1rem auto;  /* centers */
 }
 
 /* Keep the navbar logo fixed */
