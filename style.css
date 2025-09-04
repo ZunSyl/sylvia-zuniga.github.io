@@ -246,9 +246,22 @@ body {
   background: transparent !important;
 }
 
-img {
+/* Making home page pictures adaptable for mobile*/
+#home img {
   max-width: 100%;
   height: auto;
   display: block;
-  margin: 1rem 0; /* centers the image & adds space */
+  margin: 1rem 0;
 }
+
+
+/* Auto Centering all pictures and making them adaptable for all pages but the home page*/
+#pictures img,
+#about img,
+#research img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+}
+
