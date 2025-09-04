@@ -256,12 +256,25 @@ body {
 
 
 /* Auto Centering all pictures and making them adaptable for all pages but the home page*/
-#pictures img,
+/* Make content images responsive everywhere (not the navbar logo) */
+#home img,
 #about img,
-#research img {
+#research img,
+#pictures img,
+#contact img {
   max-width: 100%;
   height: auto;
   display: block;
-  margin: 1rem auto;
+  margin: 1rem auto;   /* remove if you don't want global centering/spacing */
 }
+
+/* Keep the navbar logo fixed */
+.navbar-brand img {
+  max-width: none;
+  width: 40px;
+  height: 40px;
+  display: inline-block; /* don't force block behavior in the navbar */
+}
+
+
 
