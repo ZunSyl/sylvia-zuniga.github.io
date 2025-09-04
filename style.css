@@ -263,7 +263,6 @@ body {
 #pictures img,
 #contact img {
   max-width: 100% !important;
-  width: 100% !important;
   height: auto !important;
   display: block;
   margin: 1rem auto;   /* remove if you don't want global centering/spacing */
