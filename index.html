@@ -205,16 +205,24 @@
                 <div id="pictures" class="content-region hide">
                   <h2>Pictures</h2>
                 
-                  <!-- Sticky index menu for Pictures -->
-                  <div class="section-index mb-4">
-                    <a href="#pictures" data-scroll="#spsp-2024" class="btn btn-outline-success btn-sm">SPSP 2024</a>
-                    <a href="#pictures" data-scroll="#csusm-2024" class="btn btn-outline-success btn-sm">CSUSM 2024</a>
-                    <a href="#pictures" data-scroll="#src-2024"   class="btn btn-outline-success btn-sm">SRC 2024</a>
-                    <a href="#pictures" data-scroll="#wpa-2025"   class="btn btn-outline-success btn-sm">WPA 2025</a>
+                  <!-- Sticky compact dropdown index (replaces the button row) -->
+                  <div class="pictures-index sticky-top d-flex justify-content-center mb-3">
+                    <div class="dropdown">
+                      <button class="btn btn-success dropdown-toggle" type="button" id="picsIndexBtn"
+                              data-bs-toggle="dropdown" aria-expanded="false">
+                        Jump to…
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="picsIndexBtn">
+                        <li><a class="dropdown-item" href="#pictures" data-scroll="#spsp-2024">SPSP 2024</a></li>
+                        <li><a class="dropdown-item" href="#pictures" data-scroll="#csusm-2024">CSUSM 2024</a></li>
+                        <li><a class="dropdown-item" href="#pictures" data-scroll="#src-2024">SRC 2024</a></li>
+                        <li><a class="dropdown-item" href="#pictures" data-scroll="#wpa-2025">WPA 2025</a></li>
+                      </ul>
+                    </div>
                   </div>
-                
+
                   
-                    <p>Here are pictures from conferences and with my research team from SCDL!</p>
+                    <p>Here are pictures from conferences I have attended! You can use the drop down menu on this page to jump to specific conferences. </p>
                 
                     <!-- Add IDs to the headers you want to jump to -->
                     <h3 id="spsp-2024">Society for Personality and Social Psychology (SPSP) International Conference 2024</h3>
@@ -267,67 +275,57 @@
     
     <script>
       (function () {
-        // Measure current heights
+        // Track current navbar height in a CSS var
+        function setNavVar() {
+          const nav = document.querySelector('.custom-navbar');
+          const h = nav ? nav.offsetHeight : 0;
+          document.documentElement.style.setProperty('--nav-h', h + 'px');
+        }
+        setNavVar();
+        window.addEventListener('resize', setNavVar);
+        window.addEventListener('load', setNavVar);
+    
         function calcOffset() {
-          const nav   = document.querySelector('.custom-navbar');               // your top navbar
-          const index = document.querySelector('#pictures .section-index');     // the sticky mini menu
-          const navH  = nav   ? nav.offsetHeight   : 0;
-          const idxH  = index ? index.offsetHeight : 0;
-          // small breathing room
-          return navH + idxH + 12;
+          const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 0;
+          const btn = document.querySelector('.pictures-index');
+          const btnH = btn ? btn.offsetHeight : 0; // the dropdown button height
+          return navH + btnH + 8; // small breathing room
         }
     
-        // Also set CSS variables so CSS fallback can be smarter later if you like
-        function setVars() {
-          const nav   = document.querySelector('.custom-navbar');
-          const index = document.querySelector('#pictures .section-index');
-          const navH  = nav   ? nav.offsetHeight   : 0;
-          const idxH  = index ? index.offsetHeight : 0;
-          document.documentElement.style.setProperty('--nav-h',  navH + 'px');
-          document.documentElement.style.setProperty('--idx-h',  idxH + 'px');
-        }
-    
-        function scrollToTarget(target) {
-          const y = target.getBoundingClientRect().top + window.pageYOffset - calcOffset();
-          window.scrollTo({ top: y, behavior: 'smooth' });
-        }
-    
-        // Bind clicks for Pictures index buttons
-        const links = document.querySelectorAll('#pictures .section-index [data-scroll]');
-        links.forEach((link) => {
-          // Use onclick to overwrite any earlier addEventListener, and stop other handlers
-          link.onclick = function (e) {
+        // Smooth scroll for dropdown items
+        document.querySelectorAll('#pictures .dropdown-menu [data-scroll]').forEach((a) => {
+          a.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            e.stopImmediatePropagation();
     
-            // Make sure #pictures is visible (legacy router)
-            const pictures = document.getElementById('pictures');
-            if (pictures && pictures.classList.contains('hide')) {
+            // Ensure pictures section is shown (legacy router)
+            const pics = document.getElementById('pictures');
+            if (pics && pics.classList.contains('hide')) {
               document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
-              pictures.classList.remove('hide');
+              pics.classList.remove('hide');
             }
     
+            // Target header
             const sel = this.getAttribute('data-scroll');
             const target = sel ? document.querySelector(sel) : null;
-            if (!target) return false;
+            if (!target) return;
+    
+            // Close dropdown immediately so its height doesn't change mid-scroll
+            const dropdown = bootstrap.Dropdown.getOrCreateInstance(document.getElementById('picsIndexBtn'));
+            dropdown.hide();
     
             // Scroll with exact offset
-            setVars();
-            scrollToTarget(target);
+            const y = target.getBoundingClientRect().top + window.pageYOffset - calcOffset();
+            window.scrollTo({ top: y, behavior: 'smooth' });
     
-            // Keep URL as #pictures so router doesn’t hide the section
+            // Keep hash stable for your router
             history.replaceState(null, '', '#pictures');
-            return false;
-          };
+          });
         });
-    
-        // Recompute on load/resize (heights change across breakpoints)
-        window.addEventListener('load', setVars);
-        window.addEventListener('resize', setVars);
       })();
     </script>
 
+  
 
   </body>
 </html>
