@@ -280,60 +280,101 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Your script -->
     <script src="script.js"></script>
-    
     <script>
       (function () {
-        // Track current navbar height in a CSS var
+        // 0) Disable browser's automatic scroll restoration for SPA-style nav
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+      
+        // 1) Reuse your existing helpers
         function setNavVar() {
           const nav = document.querySelector('.custom-navbar');
           const h = nav ? nav.offsetHeight : 0;
           document.documentElement.style.setProperty('--nav-h', h + 'px');
         }
-        setNavVar();
-        window.addEventListener('resize', setNavVar);
-        window.addEventListener('load', setNavVar);
-    
         function calcOffset() {
           const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 0;
           const btn = document.querySelector('.pictures-index');
-          const btnH = btn ? btn.offsetHeight : 0; // the dropdown button height
-          return navH + btnH + 8; // small breathing room
+          const btnH = btn ? btn.offsetHeight : 0;
+          return navH + btnH + 8;
         }
-    
-        // Smooth scroll for dropdown items
+        setNavVar();
+        window.addEventListener('resize', setNavVar);
+        window.addEventListener('load', setNavVar);
+      
+        // 2) Helper: show a section and scroll to its top (with offset)
+        function showSection(id) {
+          const section = document.getElementById(id);
+          if (!section) return;
+      
+          // Hide others, show this one
+          document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
+          section.classList.remove('hide');
+      
+          // Close mobile menu if open
+          const collapse = document.getElementById('navbarNav');
+          if (collapse && collapse.classList.contains('show')) {
+            bootstrap.Collapse.getOrCreateInstance(collapse).hide();
+          }
+      
+          // Scroll to top of the section (or just window.scrollTo({top:0}))
+          const y = section.getBoundingClientRect().top + window.pageYOffset - calcOffset();
+          window.scrollTo({ top: Math.max(0, y), behavior: 'auto' });
+      
+          // Keep hash tidy
+          history.replaceState(null, '', '#' + id);
+        }
+      
+        // 3) Intercept top navbar links so switching "pages" resets scroll
+        document.querySelectorAll('.nav-link[href^="#"]').forEach(a => {
+          a.addEventListener('click', function (e) {
+            const id = this.getAttribute('href').slice(1);
+            if (!id) return;
+            e.preventDefault();
+            showSection(id);
+          });
+        });
+      
+        // 4) Handle back/forward buttons: show section from hash and scroll to top
+        window.addEventListener('popstate', () => {
+          const id = (location.hash || '#home').slice(1);
+          showSection(id);
+        });
+      
+        // 5) On initial load, ensure we start at the right section and top
+        window.addEventListener('load', () => {
+          const id = (location.hash || '#home').slice(1);
+          showSection(id);
+        });
+      
+        // 6) Keep your existing #pictures dropdown smooth-scroll as-is
         document.querySelectorAll('#pictures .dropdown-menu [data-scroll]').forEach((a) => {
           a.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-    
-            // Ensure pictures section is shown (legacy router)
+      
             const pics = document.getElementById('pictures');
             if (pics && pics.classList.contains('hide')) {
               document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
               pics.classList.remove('hide');
             }
-    
-            // Target header
+      
             const sel = this.getAttribute('data-scroll');
             const target = sel ? document.querySelector(sel) : null;
             if (!target) return;
-    
-            // Close dropdown immediately so its height doesn't change mid-scroll
+      
             const dropdown = bootstrap.Dropdown.getOrCreateInstance(document.getElementById('picsIndexBtn'));
             dropdown.hide();
-    
-            // Scroll with exact offset
+      
             const y = target.getBoundingClientRect().top + window.pageYOffset - calcOffset();
             window.scrollTo({ top: y, behavior: 'smooth' });
-    
-            // Keep hash stable for your router
+      
             history.replaceState(null, '', '#pictures');
           });
         });
       })();
-    </script>
-
-  
+      </script>
 
   </body>
 </html>
