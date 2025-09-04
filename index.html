@@ -280,99 +280,104 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Your script -->
     <script src="script.js"></script>
+    
     <script>
       (function () {
-        // 0) Disable browser's automatic scroll restoration for SPA-style nav
+        // Make the browser stop "helpfully" restoring old scroll positions
         if ('scrollRestoration' in history) {
           history.scrollRestoration = 'manual';
         }
       
-        // 1) Reuse your existing helpers
+        // Track navbar height in a CSS var
         function setNavVar() {
           const nav = document.querySelector('.custom-navbar');
           const h = nav ? nav.offsetHeight : 0;
           document.documentElement.style.setProperty('--nav-h', h + 'px');
         }
-        function calcOffset() {
-          const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 0;
-          const btn = document.querySelector('.pictures-index');
-          const btnH = btn ? btn.offsetHeight : 0;
-          return navH + btnH + 8;
-        }
         setNavVar();
         window.addEventListener('resize', setNavVar);
         window.addEventListener('load', setNavVar);
       
-        // 2) Helper: show a section and scroll to its top (with offset)
-        function showSection(id) {
+        // Offset = navbar + visible pictures index (only if shown)
+        function calcOffset() {
+          const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 0;
+          const idx = document.querySelector('.pictures-index');
+          const idxVisible = idx && idx.offsetParent !== null; // not display:none
+          const idxH = idxVisible ? idx.offsetHeight : 0;
+          return navH + idxH + 8;
+        }
+      
+        // Show exactly one section
+        function showOnly(id) {
           const section = document.getElementById(id);
-          if (!section) return;
-      
-          // Hide others, show this one
           document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
-          section.classList.remove('hide');
+          if (section) section.classList.remove('hide');
       
-          // Close mobile menu if open
+          // Close mobile nav if open
           const collapse = document.getElementById('navbarNav');
           if (collapse && collapse.classList.contains('show')) {
             bootstrap.Collapse.getOrCreateInstance(collapse).hide();
           }
-      
-          // Scroll to top of the section (or just window.scrollTo({top:0}))
-          const y = section.getBoundingClientRect().top + window.pageYOffset - calcOffset();
-          window.scrollTo({ top: Math.max(0, y), behavior: 'auto' });
-      
-          // Keep hash tidy
-          history.replaceState(null, '', '#' + id);
         }
       
-        // 3) Intercept top navbar links so switching "pages" resets scroll
+        // Scroll to top of current section (with offset)
+        function scrollToSection(id) {
+          const section = document.getElementById(id);
+          const top = section
+            ? section.getBoundingClientRect().top + window.pageYOffset - calcOffset()
+            : 0;
+          window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+        }
+      
+        // Activate section from hash and scroll to its top
+        function activateFromHash() {
+          const id = (location.hash || '#home').slice(1);
+          showOnly(id);
+          // Wait a frame so classes apply before measuring
+          requestAnimationFrame(() => scrollToSection(id));
+        }
+      
+        // Let links update the hash naturally — don't preventDefault
+        // Just ensure they are hash links:
         document.querySelectorAll('.nav-link[href^="#"]').forEach(a => {
-          a.addEventListener('click', function (e) {
-            const id = this.getAttribute('href').slice(1);
-            if (!id) return;
-            e.preventDefault();
-            showSection(id);
+          a.addEventListener('click', () => {
+            // default behavior updates location.hash, then our hashchange runs
           });
         });
       
-        // 4) Handle back/forward buttons: show section from hash and scroll to top
-        window.addEventListener('popstate', () => {
-          const id = (location.hash || '#home').slice(1);
-          showSection(id);
-        });
-      
-        // 5) On initial load, ensure we start at the right section and top
-        window.addEventListener('load', () => {
-          const id = (location.hash || '#home').slice(1);
-          showSection(id);
-        });
-      
-        // 6) Keep your existing #pictures dropdown smooth-scroll as-is
+        // Pictures dropdown smooth scroll stays the same (inside #pictures)
         document.querySelectorAll('#pictures .dropdown-menu [data-scroll]').forEach((a) => {
           a.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
       
+            // Ensure pictures is visible
             const pics = document.getElementById('pictures');
             if (pics && pics.classList.contains('hide')) {
               document.querySelectorAll('.content-region').forEach(el => el.classList.add('hide'));
               pics.classList.remove('hide');
             }
       
+            // Close dropdown quickly
+            const dropdown = bootstrap.Dropdown.getOrCreateInstance(document.getElementById('picsIndexBtn'));
+            dropdown.hide();
+      
+            // Scroll to target header inside pictures
             const sel = this.getAttribute('data-scroll');
             const target = sel ? document.querySelector(sel) : null;
             if (!target) return;
       
-            const dropdown = bootstrap.Dropdown.getOrCreateInstance(document.getElementById('picsIndexBtn'));
-            dropdown.hide();
-      
             const y = target.getBoundingClientRect().top + window.pageYOffset - calcOffset();
             window.scrollTo({ top: y, behavior: 'smooth' });
       
+            // Keep hash on #pictures so router doesn't jump elsewhere
             history.replaceState(null, '', '#pictures');
           });
         });
+      
+        // Run on first load and whenever the hash changes
+        window.addEventListener('load', activateFromHash);
+        window.addEventListener('hashchange', activateFromHash);
       })();
       </script>
 
