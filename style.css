@@ -164,6 +164,19 @@ ul.main-menu li a.active {
   scroll-margin-top: 110px;
 }
 
+/* Sticky compact dropdown for Pictures */
+.pictures-index {
+  position: sticky;                 /* stays visible as you scroll */
+  top: calc(var(--nav-h, 64px));    /* sit right below your top navbar */
+  z-index: 1050;                    /* above content, below modal level */
+}
+
+/* Give headings enough space in case of native (hash) jumps */
+#pictures h2,
+#pictures h3 {
+  scroll-margin-top: calc(var(--nav-h, 64px) + 56px); /* navbar + dropdown button */
+}
+
 /* Ensure headings in Pictures land clear of the bars (CSS fallback) */
 #pictures h3 {
   scroll-margin-top: 200px; /* safe default; JS will tighten this dynamically */
