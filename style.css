@@ -246,3 +246,9 @@ body {
   background: transparent !important;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0; /* centers the image & adds space */
+}
