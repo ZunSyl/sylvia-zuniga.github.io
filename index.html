@@ -62,7 +62,7 @@
               <div id="content">
 
                 <!-- HOME -->
-                <div id="home" class="content-region hide">
+                <div id="home" class="content-region">
                   <h2>Home</h2>
                   <p>
                     <img src="pictures/Zuniga_Portrait_cropped.jpg" alt="Sylvia Zuniga Headshot" width="200" height="200"><br>
@@ -345,9 +345,8 @@
         function activateFromHash() {
           const id = location.hash ? location.hash.slice(1) : 'home';
           showOnly(id);
-          // Wait a frame so classes apply before measuring
           requestAnimationFrame(() => scrollToSection(id));
-        }
+          }
       
         // Let links update the hash naturally — don't preventDefault
         // Just ensure they are hash links:
