@@ -343,7 +343,7 @@
       
         // Activate section from hash and scroll to its top
         function activateFromHash() {
-          const id = (location.hash || '#home').slice(1);
+          const id = location.hash ? location.hash.slice(1) : 'home';
           showOnly(id);
           // Wait a frame so classes apply before measuring
           requestAnimationFrame(() => scrollToSection(id));
