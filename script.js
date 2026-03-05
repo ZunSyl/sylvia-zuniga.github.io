@@ -7,7 +7,7 @@
     
     // First hide all content regions, then show the content-region specified in the URL hash 
     // (or if no hash URL is found, default to first menu item)
-    // $('.content-region').hide();
+    $('.content-region').hide();
     
     // Remove any active classes on the main-menu
     $('.main-menu a').removeClass('active');
