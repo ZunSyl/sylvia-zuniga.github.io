@@ -343,10 +343,17 @@
       
         // Activate section from hash and scroll to its top
         function activateFromHash() {
-          const id = location.hash ? location.hash.slice(1) : 'home';
+          let id = location.hash ? location.hash.slice(1) : 'home';
+
+          // If the section doesn't exist, fallback to home
+          if (!document.getElementById(id)) {
+          id = 'home';
+            }
+
           showOnly(id);
+
           requestAnimationFrame(() => scrollToSection(id));
-          }
+        }
       
         // Let links update the hash naturally — don't preventDefault
         // Just ensure they are hash links:
